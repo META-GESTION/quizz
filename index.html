@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu de Quiz - Menu d'Accueil</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    /* Container Styles */
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 15px;
+      margin: 10px 0;
+      width: 80%;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:disabled {
+      background-color: #ddd;
+      cursor: not-allowed;
+    }
+
+    .choices button {
+      background-color: #2196F3;
+    }
+
+    #next-button {
+      background-color: #f39c12;
+    }
+
+    .result {
+      display: none;
+    }
+
+    #score {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+
+    #question {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Style Menu */
+    .menu-container {
+      display: block;
+    }
+
+    .game-container {
+      display: none;
+    }
+
+    /* Category Styles */
+    .category-buttons {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    .category-buttons button {
+      width: 45%;
+      margin-bottom: 15px;
+      background-color: #2196F3;
+    }
+
+    .button-back {
+      background-color: #e74c3c;
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Menu d'Accueil -->
+    <div class="menu-container" id="menu">
+      <h1>Bienvenue dans le Quiz !</h1>
+      <p>Choisissez une catégorie et commencez à jouer.</p>
+      <div class="category-buttons">
+        <button onclick="startQuiz('general')">Quiz Général</button>
+        <button onclick="startQuiz('geography')">Géographie</button>
+        <button onclick="startQuiz('history')">Histoire</button>
+        <button onclick="startQuiz('science')">Science</button>
+      </div>
+    </div>
+
+    <!-- Quiz Game Container -->
+    <div class="game-container" id="game">
+      <h2>Quiz - <span id="category-title"></span></h2>
+      <div id="question"></div>
+      <div class="choices">
+        <button class="choice" onclick="checkAnswer(0)"></button>
+        <button class="choice" onclick="checkAnswer(1)"></button>
+        <button class="choice" onclick="checkAnswer(2)"></button>
+        <button class="choice" onclick="checkAnswer(3)"></button>
+      </div>
+      <p id="score"></p>
+      <button id="next-button" onclick="nextQuestion()" disabled>Suivant</button>
+      <button class="button-back" onclick="goToMenu()">Retour au Menu</button>
+    </div>
+
+    <!-- Résultat -->
+    <div id="result" class="result">
+      <h2>Votre score final</h2>
+      <p id="final-score"></p>
+      <button onclick="restartQuiz()">Recommencer</button>
+      <button onclick="goToMenu()">Retour au menu</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = {
+      general: [
+        {
+          question: "Quelle est la capitale de la France ?",
+          choices: ["Paris", "Lyon", "Marseille", "Nice"],
+          correctAnswer: 0,
+        },
+        {
+          question: "Quel est le plus grand océan du monde ?",
+          choices: ["Atlantique", "Indien", "Pacifique", "Arctique"],
+          correctAnswer: 2,
+        },
+        {
+          question: "Combien de continents existe-t-il ?",
+          choices: ["5", "6", "7", "8"],
+          correctAnswer: 2,
+        },
+      ],
+      geography: [
+        {
+          question: "Quelle est la plus grande montagne du monde ?",
+          choices: ["Mont Kilimandjaro", "Mont Everest", "Mont Fuji", "Mont Blanc"],
+          correctAnswer: 1,
+        },
+        {
+          question: "Quel est le plus long fleuve du monde ?",
+          choices: ["Amazonie", "Nil", "Yangtsé", "Mississippi"],
+          correctAnswer: 0,
+        },
+      ],
+      history: [
+        {
+          question: "Qui a découvert l'Amérique en 1492 ?",
+          choices: ["Christophe Colomb", "Marco Polo", "Vasco de Gama", "Hernán Cortés"],
+          correctAnswer: 0,
+        },
+        {
+          question: "En quelle année a eu lieu la Révolution Française ?",
+          choices: ["1789", "1776", "1804", "1815"],
+          correctAnswer: 0,
+        },
+      ],
+      science: [
+        {
+          question: "Quelle est la formule chimique de l'eau ?",
+          choices: ["H2O", "CO2", "O2", "N2"],
+          correctAnswer: 0,
+        },
+        {
+          question: "Combien de planètes dans notre système solaire ?",
+          choices: ["8", "9", "10", "7"],
+          correctAnswer: 0,
+        },
+      ],
+    };
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedCategory = '';
+    let questions = [];
+
+    // Fonction pour commencer le quiz
+    function startQuiz(category) {
+      selectedCategory = category;
+      questions = quizData[category];
+      currentQuestionIndex = 0;
+      score = 0;
+
+      document.getElementById("category-title").textContent = category.charAt(0).toUpperCase() + category.slice(1);
+      document.getElementById("menu").style.display = 'none';
+      document.getElementById("game").style.display = 'block';
+      loadQuestion();
+    }
+
+    // Fonction pour charger une question
+    function loadQuestion() {
+      const questionData = questions[currentQuestionIndex];
+      document.getElementById("question").textContent = questionData.question;
+      const choices = document.querySelectorAll(".choice");
+
+      questionData.choices.forEach((choice, index) => {
+        choices[index].textContent = choice;
+        choices[index].style.backgroundColor = ''; // Réinitialisation de la couleur de fond
+      });
+
+      document.getElementById("score").textContent = `Score : ${score}`;
+      document.getElementById("next-button").disabled = true;
+      document.querySelectorAll(".choice").forEach(button => button.disabled = false);
+    }
+
+    // Fonction pour vérifier la réponse
+    function checkAnswer(choiceIndex) {
+      const questionData = questions[currentQuestionIndex];
+
+      // Indication visuelle de la réponse sélectionnée
+      const choices = document.querySelectorAll(".choice");
+      choices[choiceIndex].style.backgroundColor = choiceIndex === questionData.correctAnswer ? 'green' : 'red';
+
+      if (choiceIndex === questionData.correctAnswer) {
+        score++;
+      }
+
+      document.querySelectorAll(".choice").forEach(button => button.disabled = true);
+      document.getElementById("next-button").disabled = false;
+    }
+
+    // Fonction pour passer à la question suivante
+    function nextQuestion() {
+      currentQuestionIndex++;
+
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    // Fonction pour afficher le résultat
+    function showResult() {
+      document.getElementById("game").style.display = "none";
+      document.getElementById("result").style.display = "block";
+      document.getElementById("final-score").textContent = `Vous avez obtenu ${score} sur ${questions.length}`;
+    }
+
+    // Fonction pour recommencer le quiz
+    function restartQuiz() {
+      startQuiz(selectedCategory);
+    }
+
+    // Fonction pour revenir au menu
+    function goToMenu() {
+      // Réinitialiser les variables du quiz
+      currentQuestionIndex = 0;
+      score = 0;
+
+      // Réinitialiser l'affichage
+      document.getElementById("game").style.display = "none";
+      document.getElementById("result").style.display = "none";
+      document.getElementById("menu").style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
