@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QUIZZ</title>
+  <title>Jeu de Quiz - Menu d'Accueil</title>
   <style>
     /* Global Styles */
     body {
@@ -16,6 +16,7 @@
       margin: 0;
       text-align: center;
       color: #333;
+      padding: 20px;
     }
 
     /* Container Styles */
@@ -24,7 +25,8 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      width: 400px;
+      width: 100%;
+      max-width: 600px;
     }
 
     h1 {
@@ -87,6 +89,22 @@
       margin-bottom: 20px;
     }
 
+    /* Progress bar */
+    #progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background-color: #ddd;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    #progress-bar {
+      width: 0;
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 5px;
+    }
+
     /* Style Menu */
     .menu-container {
       display: block;
@@ -122,7 +140,7 @@
     <!-- Menu d'Accueil -->
     <div class="menu-container" id="menu">
       <h1>Bienvenue dans le Quiz !</h1>
-      <p>By META GESTION</p>
+      <p>Choisissez une catégorie et commencez à jouer.</p>
       <div class="category-buttons">
         <button onclick="startQuiz('general')">Quiz Général</button>
         <button onclick="startQuiz('geography')">Géographie</button>
@@ -142,6 +160,12 @@
         <button class="choice" onclick="checkAnswer(3)"></button>
       </div>
       <p id="score"></p>
+      
+      <!-- Progress Bar -->
+      <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+
       <button id="next-button" onclick="nextQuestion()" disabled>Suivant</button>
       <button class="button-back" onclick="goToMenu()">Retour au Menu</button>
     </div>
@@ -158,57 +182,52 @@
   <script>
     const quizData = {
       general: [
-        {
-          question: "Quelle est la capitale de la France ?",
-          choices: ["Paris", "Lyon", "Marseille", "Nice"],
-          correctAnswer: 0,
-        },
-        {
-          question: "Quel est le plus grand océan du monde ?",
-          choices: ["Atlantique", "Indien", "Pacifique", "Arctique"],
-          correctAnswer: 2,
-        },
-        {
-          question: "Combien de continents existe-t-il ?",
-          choices: ["5", "6", "7", "8"],
-          correctAnswer: 2,
-        },
+        { question: "Quelle est la capitale de la France ?", choices: ["Paris", "Lyon", "Marseille", "Nice"], correctAnswer: 0 },
+        { question: "Quel est le plus grand océan du monde ?", choices: ["Atlantique", "Indien", "Pacifique", "Arctique"], correctAnswer: 2 },
+        { question: "Combien de continents existe-t-il ?", choices: ["5", "6", "7", "8"], correctAnswer: 2 },
+        { question: "Quel est le plus grand désert du monde ?", choices: ["Sahara", "Gobi", "Kalahari", "Antarctique"], correctAnswer: 3 },
+        { question: "Quel est le plus grand pays en superficie ?", choices: ["Canada", "Russie", "Chine", "États-Unis"], correctAnswer: 1 },
+        { question: "Quel est le plus grand lac du monde ?", choices: ["Caspienne", "Supérieur", "Victoria", "Ontario"], correctAnswer: 0 },
+        { question: "Où se trouve la Grande Muraille ?", choices: ["Inde", "Chine", "Japon", "Corée"], correctAnswer: 1 },
+        { question: "Quelle est la langue la plus parlée au monde ?", choices: ["Mandarin", "Espagnol", "Anglais", "Arabe"], correctAnswer: 0 },
+        { question: "Quel est le plus grand océan du monde ?", choices: ["Atlantique", "Indien", "Pacifique", "Arctique"], correctAnswer: 2 },
+        { question: "Combien de pays dans l'Union Européenne ?", choices: ["27", "28", "26", "30"], correctAnswer: 0 },
       ],
       geography: [
-        {
-          question: "Quelle est la plus grande montagne du monde ?",
-          choices: ["Mont Kilimandjaro", "Mont Everest", "Mont Fuji", "Mont Blanc"],
-          correctAnswer: 1,
-        },
-        {
-          question: "Quel est le plus long fleuve du monde ?",
-          choices: ["Amazonie", "Nil", "Yangtsé", "Mississippi"],
-          correctAnswer: 0,
-        },
+        { question: "Quelle est la plus grande montagne du monde ?", choices: ["Mont Kilimandjaro", "Mont Everest", "Mont Fuji", "Mont Blanc"], correctAnswer: 1 },
+        { question: "Quel est le plus long fleuve du monde ?", choices: ["Amazonie", "Nil", "Yangtsé", "Mississippi"], correctAnswer: 0 },
+        { question: "Quel est le plus petit pays du monde ?", choices: ["Monaco", "Nauru", "Vatican", "Liechtenstein"], correctAnswer: 2 },
+        { question: "Où se trouve le lac Titicaca ?", choices: ["Pérou", "Bolivie", "Chili", "Argentine"], correctAnswer: 1 },
+        { question: "Quel pays a le plus grand nombre d'îles ?", choices: ["Indonésie", "Suède", "Canada", "Finlande"], correctAnswer: 3 },
+        { question: "Quelle est la capitale du Japon ?", choices: ["Seoul", "Beijing", "Tokyo", "Hanoï"], correctAnswer: 2 },
+        { question: "Quelle ville est la plus peuplée du monde ?", choices: ["Tokyo", "New York", "Shanghai", "Delhi"], correctAnswer: 0 },
+        { question: "Quelle mer est située entre la Turquie et la Grèce ?", choices: ["Mer Égée", "Mer Méditerranée", "Mer Noire", "Mer Caspienne"], correctAnswer: 0 },
+        { question: "Quel est le pays le plus densément peuplé au monde ?", choices: ["Inde", "Monaco", "Chine", "Japon"], correctAnswer: 1 },
+        { question: "Quel est le pays avec la plus grande superficie en Europe ?", choices: ["France", "Allemagne", "Russie", "Ukraine"], correctAnswer: 2 },
       ],
       history: [
-        {
-          question: "Qui a découvert l'Amérique en 1492 ?",
-          choices: ["Christophe Colomb", "Marco Polo", "Vasco de Gama", "Hernán Cortés"],
-          correctAnswer: 0,
-        },
-        {
-          question: "En quelle année a eu lieu la Révolution Française ?",
-          choices: ["1789", "1776", "1804", "1815"],
-          correctAnswer: 0,
-        },
+        { question: "Qui a découvert l'Amérique en 1492 ?", choices: ["Christophe Colomb", "Marco Polo", "Vasco de Gama", "Hernán Cortés"], correctAnswer: 0 },
+        { question: "En quelle année a eu lieu la Révolution Française ?", choices: ["1789", "1776", "1804", "1815"], correctAnswer: 0 },
+        { question: "Qui était le premier empereur romain ?", choices: ["Jules César", "Augustus", "Néron", "Trajan"], correctAnswer: 1 },
+        { question: "Qui a fondé Rome ?", choices: ["Romulus et Rémus", "Jules César", "Napoléon Bonaparte", "Alexandre le Grand"], correctAnswer: 0 },
+        { question: "Quel fut le premier président des États-Unis ?", choices: ["Thomas Jefferson", "Abraham Lincoln", "George Washington", "Franklin Roosevelt"], correctAnswer: 2 },
+        { question: "Quand la Première Guerre mondiale a-t-elle commencé ?", choices: ["1914", "1918", "1939", "1945"], correctAnswer: 0 },
+        { question: "Quand l'Empire romain a-t-il été divisé ?", choices: ["300", "476", "500", "395"], correctAnswer: 3 },
+        { question: "Qui a écrit la Déclaration des droits de l'homme et du citoyen ?", choices: ["Napoléon", "Jules César", "Jean-Jacques Rousseau", "Montesquieu"], correctAnswer: 2 },
+        { question: "Quel empire a été dirigé par Gengis Khan ?", choices: ["Mongol", "Ottoman", "Byzantin", "Romain"], correctAnswer: 0 },
+        { question: "Quand la Seconde Guerre mondiale a-t-elle pris fin ?", choices: ["1945", "1940", "1939", "1950"], correctAnswer: 0 },
       ],
       science: [
-        {
-          question: "Quelle est la formule chimique de l'eau ?",
-          choices: ["H2O", "CO2", "O2", "N2"],
-          correctAnswer: 0,
-        },
-        {
-          question: "Combien de planètes dans notre système solaire ?",
-          choices: ["8", "9", "10", "7"],
-          correctAnswer: 0,
-        },
+        { question: "Quelle est la formule chimique de l'eau ?", choices: ["H2O", "CO2", "O2", "N2"], correctAnswer: 0 },
+        { question: "Combien de planètes dans notre système solaire ?", choices: ["8", "9", "10", "7"], correctAnswer: 0 },
+        { question: "Quel est l'élément chimique représenté par 'O' ?", choices: ["Oxygène", "Ozone", "Or", "Osmium"], correctAnswer: 0 },
+        { question: "Quelle est la vitesse de la lumière ?", choices: ["300 000 km/s", "150 000 km/s", "100 000 km/s", "500 000 km/s"], correctAnswer: 0 },
+        { question: "Qui a découvert la gravité ?", choices: ["Galileo", "Newton", "Einstein", "Kepler"], correctAnswer: 1 },
+        { question: "Quel est le plus grand organe humain ?", choices: ["Peau", "Cerveau", "Cœur", "Foie"], correctAnswer: 0 },
+        { question: "Quel est le gaz majoritaire dans l'atmosphère terrestre ?", choices: ["Oxygène", "Azote", "Carbone", "Hydrogène"], correctAnswer: 1 },
+        { question: "Quel est l'élément chimique ayant le plus grand numéro atomique ?", choices: ["Uranium", "Plutonium", "Oganesson", "Radon"], correctAnswer: 2 },
+        { question: "Que mesure un baromètre ?", choices: ["Température", "Pression", "Vitesse", "Altitude"], correctAnswer: 1 },
+        { question: "Quel est le plus grand mammifère terrestre ?", choices: ["Éléphant", "Rhinocéros", "Girafe", "Baleine"], correctAnswer: 0 },
       ],
     };
 
@@ -242,6 +261,11 @@
       });
 
       document.getElementById("score").textContent = `Score : ${score}`;
+
+      // Mise à jour de la barre de progression
+      const progress = (currentQuestionIndex / questions.length) * 100;
+      document.getElementById("progress-bar").style.width = progress + '%';
+
       document.getElementById("next-button").disabled = true;
       document.querySelectorAll(".choice").forEach(button => button.disabled = false);
     }
@@ -287,11 +311,8 @@
 
     // Fonction pour revenir au menu
     function goToMenu() {
-      // Réinitialiser les variables du quiz
       currentQuestionIndex = 0;
       score = 0;
-
-      // Réinitialiser l'affichage
       document.getElementById("game").style.display = "none";
       document.getElementById("result").style.display = "none";
       document.getElementById("menu").style.display = "block";
