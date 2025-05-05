@@ -185,14 +185,14 @@
     <!-- Résultat -->
     <div id="result" class="result">
       <h2>Votre score final</h2>
+      <p id="final-category"></p> <!-- ✅ AJOUTÉ -->
       <p id="final-score"></p>
-      <button onclick="captureScore()">📸 Télécharger le score</button> <!-- Bouton ajouté -->
+      <button onclick="captureScore()">📸 Télécharger le score</button>
       <button onclick="goToMenu()">Retour au menu</button>
     </div>
   </div>
 
   <script>
-    // Affichage après chargement
     window.addEventListener("load", () => {
       setTimeout(() => {
         document.getElementById("loading-screen").style.display = "none";
@@ -312,6 +312,7 @@
       document.getElementById("game").style.display = "none";
       document.getElementById("result").style.display = "block";
       document.getElementById("final-score").textContent = `Vous avez obtenu ${score} sur ${questions.length}`;
+      document.getElementById("final-category").textContent = `Catégorie : ${selectedCategory}`; // ✅ AJOUTÉ
     }
 
     function restartQuiz() {
@@ -326,7 +327,6 @@
       document.getElementById("menu").style.display = "block";
     }
 
-    // Fonction pour capturer le score
     function captureScore() {
       const resultElement = document.getElementById("result");
       html2canvas(resultElement).then(canvas => {
@@ -338,7 +338,6 @@
     }
   </script>
 
-  <!-- 📦 Ajout de la bibliothèque html2canvas -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 </body>
